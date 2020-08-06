@@ -1,9 +1,15 @@
+class HttpResponse {
+  static serverError () {
+    return {
+      statusCode: 500
+    }
+  }
+}
+
 class LoginRouter {
   route (httpRequest) {
     if (!httpRequest || !httpRequest.body) {
-      return {
-        statusCode: 500
-      }
+      return HttpResponse.serverError()
     }
   }
 }
