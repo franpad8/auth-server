@@ -5,4 +5,11 @@ class MissingParamError extends Error {
   }
 }
 
-module.exports = { MissingParamError }
+class UnauthorizedError extends Error {
+  constructor (param) {
+    super(`Missing Param: ${param}`)
+    this.name = 'MissingParamError'
+  }
+}
+
+module.exports = { MissingParamError, UnauthorizedError }
