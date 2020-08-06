@@ -6,9 +6,11 @@ const makeSut = function () {
     auth (email, password) {
       this.email = email
       this.password = password
+      return this.authToken
     }
   }
   const authUseCase = new AuthUseCase()
+  authUseCase.authToken = 'validToken'
   const sut = new LoginRouter(authUseCase)
   return {
     authUseCase,
@@ -67,6 +69,20 @@ describe('LoginRouter', function () {
     expect(authUseCase.password).toEqual(httpRequest.body.password)
   })
 
+  it('should return 200 if correct credentials are provided', function () {
+    const httpRequest = {
+      body: {
+        email: 'valid_email@email.com',
+        password: 'validpassword'
+      }
+    }
+    const { sut } = makeSut()
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toEqual(200)
+  })
+
   it('should return 401 when invalid credentials are provided', function () {
     const httpRequest = {
       body: {
@@ -74,10 +90,35 @@ describe('LoginRouter', function () {
         password: 'invalidpassword'
       }
     }
-    const { sut } = makeSut()
+    const { sut, authUseCase } = makeSut()
+    authUseCase.authToken = null
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toEqual(401)
     expect(httpResponse.body).toEqual(new UnauthorizedError())
+  })
+
+  it('should return 500 if no AuthUseCase is provided', function () {
+    const sut = new LoginRouter()
+    const httpRequest = {
+      body: {
+        email: 'validemail@email.com',
+        password: 'validpassword@email.com'
+      }
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toEqual(500)
+  })
+
+  it('should return 500 if AuthUseCase is provided without an auth method', function () {
+    const sut = new LoginRouter({})
+    const httpRequest = {
+      body: {
+        email: 'validemail@email.com',
+        password: 'validpassword@email.com'
+      }
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toEqual(500)
   })
 })
