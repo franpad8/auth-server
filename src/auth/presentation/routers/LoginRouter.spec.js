@@ -21,6 +21,10 @@ class HttpResponse {
 }
 
 class LoginRouter {
+  constructor (authUseCase) {
+    this.authUseCase = authUseCase
+  }
+
   route (httpRequest) {
     if (!httpRequest || !httpRequest.body) {
       return HttpResponse.serverError()
@@ -32,23 +36,35 @@ class LoginRouter {
     if (!password) {
       return HttpResponse.badRequest('password')
     }
+    this.authUseCase.auth(email, password)
   }
 }
 
 const makeSut = function () {
-  return new LoginRouter()
+  class AuthUseCase {
+    auth (email, password) {
+      this.email = email
+      this.password = password
+    }
+  }
+  const authUseCase = new AuthUseCase()
+  const sut = new LoginRouter(authUseCase)
+  return {
+    authUseCase,
+    sut
+  }
 }
 
 describe('LoginRouter', function () {
   it('should return 500 if not httpRequest object is provided', function () {
-    const sut = makeSut()
+    const { sut } = makeSut()
     const httpResponse = sut.route()
     expect(httpResponse.statusCode).toEqual(500)
   })
 
   it('should return 500 if not request body is provided', function () {
     const httpRequest = {}
-    const sut = makeSut()
+    const { sut } = makeSut()
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toEqual(500)
   })
@@ -59,7 +75,7 @@ describe('LoginRouter', function () {
         password: 'letmein'
       }
     }
-    const sut = makeSut()
+    const { sut } = makeSut()
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toEqual(400)
     expect(httpResponse.body).toEqual(new MissingParamError('email'))
@@ -71,9 +87,22 @@ describe('LoginRouter', function () {
         email: 'test@email.com'
       }
     }
-    const sut = makeSut()
+    const { sut } = makeSut()
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toEqual(400)
     expect(httpResponse.body).toEqual(new MissingParamError('password'))
+  })
+
+  it('should call AuthUseCase with correct arguments', function () {
+    const httpRequest = {
+      body: {
+        email: 'test@email.com',
+        password: 'letmein'
+      }
+    }
+    const { sut, authUseCase } = makeSut()
+    sut.route(httpRequest)
+    expect(authUseCase.email).toEqual(httpRequest.body.email)
+    expect(authUseCase.password).toEqual(httpRequest.body.password)
   })
 })
