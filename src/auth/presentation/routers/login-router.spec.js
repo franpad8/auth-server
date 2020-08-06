@@ -1,44 +1,5 @@
-class MissingParamError extends Error {
-  constructor (param) {
-    super(`Missing Param: ${param}`)
-    this.name = 'MissingParamError'
-  }
-}
-
-class HttpResponse {
-  static serverError () {
-    return {
-      statusCode: 500
-    }
-  }
-
-  static badRequest (param) {
-    return {
-      statusCode: 400,
-      body: new MissingParamError(param)
-    }
-  }
-}
-
-class LoginRouter {
-  constructor (authUseCase) {
-    this.authUseCase = authUseCase
-  }
-
-  route (httpRequest) {
-    if (!httpRequest || !httpRequest.body) {
-      return HttpResponse.serverError()
-    }
-    const { email, password } = httpRequest.body
-    if (!email) {
-      return HttpResponse.badRequest('email')
-    }
-    if (!password) {
-      return HttpResponse.badRequest('password')
-    }
-    this.authUseCase.auth(email, password)
-  }
-}
+const LoginRouter = require('./login-router')
+const { MissingParamError } = require('../../../utils/errors')
 
 const makeSut = function () {
   class AuthUseCase {
