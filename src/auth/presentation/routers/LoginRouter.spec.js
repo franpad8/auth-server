@@ -25,9 +25,12 @@ class LoginRouter {
     if (!httpRequest || !httpRequest.body) {
       return HttpResponse.serverError()
     }
-    const { email } = httpRequest.body
+    const { email, password } = httpRequest.body
     if (!email) {
       return HttpResponse.badRequest('email')
+    }
+    if (!password) {
+      return HttpResponse.badRequest('password')
     }
   }
 }
@@ -50,7 +53,7 @@ describe('LoginRouter', function () {
     expect(httpResponse.statusCode).toEqual(500)
   })
 
-  it('should return 400 if not email is provided', function () {
+  it('should return 400 if no email is provided', function () {
     const httpRequest = {
       body: {
         password: 'letmein'
@@ -60,5 +63,17 @@ describe('LoginRouter', function () {
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toEqual(400)
     expect(httpResponse.body).toEqual(new MissingParamError('email'))
+  })
+
+  it('should return 400 if no password is provided', function () {
+    const httpRequest = {
+      body: {
+        email: 'test@email.com'
+      }
+    }
+    const sut = makeSut()
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toEqual(400)
+    expect(httpResponse.body).toEqual(new MissingParamError('password'))
   })
 })
