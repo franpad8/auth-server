@@ -76,11 +76,12 @@ describe('LoginRouter', function () {
         password: 'validpassword'
       }
     }
-    const { sut } = makeSut()
+    const { sut, authUseCase } = makeSut()
 
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toEqual(200)
+    expect(httpResponse.body.authToken).toEqual(authUseCase.authToken)
   })
 
   it('should return 401 when invalid credentials are provided', function () {
@@ -92,6 +93,7 @@ describe('LoginRouter', function () {
     }
     const { sut, authUseCase } = makeSut()
     authUseCase.authToken = null
+
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toEqual(401)
