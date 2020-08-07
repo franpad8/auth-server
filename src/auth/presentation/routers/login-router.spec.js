@@ -14,6 +14,7 @@ const makeSut = function () {
   const sut = new LoginRouter(authUseCase, emailValidator)
   return {
     authUseCase,
+    emailValidator,
     sut
   }
 }
@@ -243,5 +244,19 @@ describe('LoginRouter', function () {
 
     expect(httpResponse.statusCode).toEqual(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  it('should call EmailValidator with correct arguments', async function () {
+    const httpRequest = {
+      body: {
+        email: 'test@email.com',
+        password: 'letmein'
+      }
+    }
+    const { sut, emailValidator } = makeSut()
+
+    await sut.route(httpRequest)
+
+    expect(emailValidator.email).toEqual(httpRequest.body.email)
   })
 })
