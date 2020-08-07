@@ -48,6 +48,16 @@ const makeEmailValidator = () => {
   return new EmailFormatValidator()
 }
 
+const makeEmailValidatorWithErrors = () => {
+  class EmailFormatValidator {
+    isValid (email) {
+      throw new Error()
+    }
+  }
+
+  return new EmailFormatValidator()
+}
+
 describe('LoginRouter', function () {
   it('should return 500 if not httpRequest object is provided', async function () {
     const { sut } = makeSut()
@@ -185,5 +195,53 @@ describe('LoginRouter', function () {
 
     expect(httpResponse.statusCode).toEqual(422)
     expect(httpResponse.body).toStrictEqual(new InvalidParamError('email'))
+  })
+
+  it('should return 500 if no emailValidator is provided', async function () {
+    const httpRequest = {
+      body: {
+        email: 'validemail@email.com',
+        password: 'validpassword@email.com'
+      }
+    }
+    const authUseCase = makeAuthUseCase()
+    const sut = new LoginRouter(authUseCase)
+
+    const httpResponse = await sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toEqual(500)
+  })
+
+  it('should return 500 if EmailValidor is provided without an isValid method', async function () {
+    const httpRequest = {
+      body: {
+        email: 'validemail@email.com',
+        password: 'validpassword@email.com'
+      }
+    }
+    const authUseCase = makeAuthUseCase()
+    const emailValidator = {}
+    const sut = new LoginRouter(authUseCase, emailValidator)
+
+    const httpResponse = await sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toEqual(500)
+  })
+
+  it('should return 500 if EmailValidator throws', async function () {
+    const httpRequest = {
+      body: {
+        email: 'valid_email@email.com',
+        password: 'validpassword'
+      }
+    }
+    const authUseCase = makeAuthUseCase()
+    const emailValidator = makeEmailValidatorWithErrors()
+    const sut = new LoginRouter(authUseCase, emailValidator)
+
+    const httpResponse = await sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toEqual(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
