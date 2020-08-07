@@ -19,4 +19,11 @@ class UnauthorizedError extends Error {
   }
 }
 
-module.exports = { MissingParamError, ServerError, UnauthorizedError }
+class InvalidParamError extends Error {
+  constructor (param) {
+    super(`Invalid Param: ${param}`)
+    this.name = 'InvalidParamError'
+  }
+}
+
+module.exports = { InvalidParamError, MissingParamError, ServerError, UnauthorizedError }

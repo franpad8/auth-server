@@ -1,8 +1,9 @@
 const HttpResponse = require('../../../utils/http-response')
 
 module.exports = class LoginRouter {
-  constructor (authUseCase) {
+  constructor (authUseCase, emailValidator) {
     this.authUseCase = authUseCase
+    this.emailValidator = emailValidator
   }
 
   async route (httpRequest) {
@@ -14,7 +15,12 @@ module.exports = class LoginRouter {
       if (!password) {
         return HttpResponse.badRequest('password')
       }
+      if (!this.emailValidator.isValid(email)) {
+        return HttpResponse.unprocessableEntity('email')
+      }
+
       const authToken = await this.authUseCase.auth(email, password)
+
       if (!authToken) {
         return HttpResponse.authorizationError()
       }

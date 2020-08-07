@@ -1,4 +1,4 @@
-const { MissingParamError, ServerError, UnauthorizedError } = require('./errors')
+const { InvalidParamError, MissingParamError, ServerError, UnauthorizedError } = require('./errors')
 
 module.exports = class HttpResponse {
   static serverError () {
@@ -26,6 +26,13 @@ module.exports = class HttpResponse {
     return {
       body: data,
       statusCode: 200
+    }
+  }
+
+  static unprocessableEntity (param) {
+    return {
+      body: new InvalidParamError(param),
+      statusCode: 422
     }
   }
 }
