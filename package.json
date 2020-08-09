@@ -12,7 +12,9 @@
     "start": "nodemon src/index.js"
   },
   "standard": {
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
   "husky": {
     "hooks": {
@@ -27,7 +29,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "passport": "^0.4.1",
-    "passport-google-oauth2": "^0.2.0"
+    "passport-google-oauth2": "^0.2.0",
+    "validator": "^13.1.1"
   },
   "devDependencies": {
     "husky": "^4.2.5",
