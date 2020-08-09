@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1596990743738" clover="3.2.0">
-  <project timestamp="1596990743738" name="All files">
-    <metrics statements="60" coveredstatements="33" conditionals="8" coveredconditionals="8" methods="16" coveredmethods="11" elements="84" coveredelements="52" complexity="0" loc="60" ncloc="60" packages="4" files="6" classes="6"/>
+<coverage generated="1597007227004" clover="3.2.0">
+  <project timestamp="1597007227004" name="All files">
+    <metrics statements="63" coveredstatements="36" conditionals="8" coveredconditionals="8" methods="17" coveredmethods="12" elements="88" coveredelements="56" complexity="0" loc="63" ncloc="63" packages="4" files="7" classes="7"/>
     <package name="src">
       <metrics statements="14" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
       <file name="index.js" path="C:\Users\HP\Desktop\Dev\auth-server\src\index.js">
@@ -68,7 +68,13 @@
       </file>
     </package>
     <package name="src.utils">
-      <metrics statements="16" coveredstatements="16" conditionals="0" coveredconditionals="0" methods="9" coveredmethods="9"/>
+      <metrics statements="19" coveredstatements="19" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="10"/>
+      <file name="email-validator.js" path="C:\Users\HP\Desktop\Dev\auth-server\src\utils\email-validator.js">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+      </file>
       <file name="errors.js" path="C:\Users\HP\Desktop\Dev\auth-server\src\utils\errors.js">
         <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="3" count="4" type="stmt"/>
